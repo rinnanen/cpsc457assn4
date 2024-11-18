@@ -53,9 +53,34 @@ pthread_t dequeue(struct Queue *queue) {
     return id;
 }
 
+void initialize_queue(struct Queue *queue) {
+    queue->front = NULL;
+    queue->rear = NULL;
+}
+
 bool is_empty(struct Queue *queue) {
     if (queue->front == NULL) {
         return true;
     }
     return false;
+}
+
+void make_sem(struct Semaphore *semaphore, int starting_value) {
+    semaphore->value = starting_value;
+    pthread_mutex_init(&semaphore->mutex, NULL);
+    pthread_cond_init(&semaphore->condition, NULL);
+    initialize_queue(&semaphore->queue);
+}
+
+void destroy_sem(struct Semaphore *semaphore) {
+    pthread_mutex_destroy(&semaphore->mutex);
+    pthread_cond_destroy(&semaphore->condition);
+}
+
+int main() {
+    struct Semaphore semaphore;
+    make_sem(&semaphore, 1);
+
+    destroy_sem(&semaphore);
+    return 0;
 }
