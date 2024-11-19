@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-//trying to push a change
+
 struct Semaphore {
     pthread_mutex_t mutex;
     pthread_cond_t condition;
