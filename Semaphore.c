@@ -21,6 +21,25 @@ struct Node {
     struct Node* next;
 };
 
+public Semaphore(int v) {
+    value = v;
+}
+
+public synchronized void wait() {
+    while (value <= 0) {
+        try {
+        super.wait();
+        }
+        catch (InterruptedException e) { }
+    }
+    value --;
+}
+
+public synchronized void signal() {
+    value++;
+    notify();
+}
+
 void enqueue(struct Queue *queue, pthread_t id) {
     struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
     new_node->id = id;
@@ -77,6 +96,8 @@ void destroy_sem(struct Semaphore *semaphore) {
     pthread_mutex_destroy(&semaphore->mutex);
     pthread_cond_destroy(&semaphore->condition);
 }
+
+
 
 int main() {
     struct Semaphore semaphore;
