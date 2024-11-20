@@ -8,7 +8,6 @@ struct Semaphore {
     pthread_mutex_t mutex;
     pthread_cond_t condition;
     int value;
-    struct Queue queue;
 };
 
 struct Queue {
@@ -24,6 +23,7 @@ struct Node {
 public synchronized void wait(Semaphore sem) {
     pthread_mutex_lock(sem.mutex); //lock thread
     while (sem.count <= 0){  //check if count <= 0, if so wait
+        enqueue(&queue, pthread.id);
         pthread_cond_wait(sem.cond, sem.mutex);
     }
     sem.count--;                   // once count increases, decrement and unlock
@@ -33,8 +33,9 @@ public synchronized void wait(Semaphore sem) {
 public synchronized void signal(Semaphore sem) {
     pthread_mutex_lock(sem.mutex); //lock thread
     sem.count++; //increment count
-    if (sem.queue.front != -1) { //check if queue is not empty
-        dequeue(sem.queue) //if not, dequeue element from queue
+    if (!is_empty(&queue)) { //check if queue is not empty
+        dequeue(&queue) //if not, dequeue element from queue and signal
+        pthread_cond_signal(sem.condition)
     }
     pthread_mutex_unlock(sem.mutex); //unlock thread once finished
 }
