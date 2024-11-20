@@ -1,3 +1,33 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <Semaphore.c>
+
+int readersCount;
+Semaphore resourceSem;
+Semaphore mutexSem;
+
+void reader(){
+    wait(&mutexSem); //lock mutex and increase reader count
+    readersCount++;
+    if (readersCount == 1){
+        wait(&resourceSem); //if the first reader, lock resource as well
+    }
+    signal(&mutexSem); //unlock mutex for other readers to use
+
+    //reading the resource
+
+    wait(&mutexSem); //lock mutex to decrease reader count
+    readersCount--;
+    if (readersCount == 0) { //last reader unlocks resource
+        signal(&resource);
+    }
+    signal(&mutex); //unlock mutex
+}
+
+void writer(){}
+
+void main(){}
 //solution1
 // • Uses an integer variable readers
 // o Shared between readers
