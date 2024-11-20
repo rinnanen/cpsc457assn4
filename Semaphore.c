@@ -20,24 +20,23 @@ struct Node {
     pthread_t id;
     struct Node* next;
 };
-
-public Semaphore(int v) {
-    value = v;
-}
-
-public synchronized void wait() {
-    while (value <= 0) {
-        try {
-        super.wait();
-        }
-        catch (InterruptedException e) { }
+ 
+public synchronized void wait(Semaphore sem) {
+    pthread_mutex_lock(sem.mutex); //lock thread
+    while (sem.count <= 0){  //check if count <= 0, if so wait
+        pthread_cond_wait(sem.cond, sem.mutex);
     }
-    value --;
+    sem.count--;                   // once count increases, decrement and unlock
+    pthread_mutex_unlock(sem.mutex);
 }
 
-public synchronized void signal() {
-    value++;
-    notify();
+public synchronized void signal(Semaphore sem) {
+    pthread_mutex_lock(sem.mutex); //lock thread
+    sem.count++; //increment count
+    if (sem.queue.front != -1) { //check if queue is not empty
+        dequeue(sem.queue) //if not, dequeue element from queue
+    }
+    pthread_mutex_unlock(sem.mutex); //unlock thread once finished
 }
 
 void enqueue(struct Queue *queue, pthread_t id) {
