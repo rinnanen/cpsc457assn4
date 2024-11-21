@@ -4,8 +4,8 @@
 #include <Semaphore.c>
 
 int readersCount;
-Semaphore resourceSem;
-Semaphore mutexSem;
+struct Semaphore resourceSem;
+struct Semaphore mutexSem;
 
 void reader(){
     wait(&mutexSem); //lock mutex and increase reader count
