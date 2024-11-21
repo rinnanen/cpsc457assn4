@@ -56,6 +56,50 @@ void reader() {
 
 
 
+// duplicated it from sol1
+void main(){
+    int randomVal = (rand() % (10 - 0 + 1)) + 0;
+    pthread_t reader_threads[10], writer_threads[randomVal];
+    int reader_ids[10], writer_ids[randomVal];
+
+    //initialize semaphores
+    make_sem(&write_mutex_sem, 1);
+    make_sem(&read_mutex_sem, 1);
+    make_sem(&readtry_mutex_sem, 1);
+    make_sem(&resource_sem, 1);
+    make_sem(&rentry_sem, 1);
+
+    //create 10 reader threads
+    for (int i = 0; i < 10; i++) {
+        reader_ids[i] = i + 1;  //assign unique id to readers
+        pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]);
+    }
+
+    // create n writer threads
+    for (int i = 0; i < randomVal; i++) {
+        writer_ids[i] = i + 1;  //assign unique id to writer
+        pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]);
+    }
+
+    //wait for all reader threads to complete
+    for (int i = 0; i < 10; i++) {
+        pthread_join(reader_threads[i], NULL);
+    }
+
+    //wait for all writer threads to complete
+    for (int i = 0; i < randomVal; i++) {
+        pthread_join(writer_threads[i], NULL);
+    }
+
+    // destroy semaphores
+    semaphore_destroy(&write_mutex_sem, 1);
+    semaphore_destroy(&read_mutex_sem, 1);
+    semaphore_destroy(&readtry_mutex_sem, 1);
+    semaphore_destroy(&resource_sem, 1);
+    semaphore_destroy(&rentry_sem, 1);
+
+}
+
 
 //solution2
 // Uses variables
