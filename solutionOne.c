@@ -8,31 +8,31 @@ struct Semaphore resourceSem;
 struct Semaphore mutexSem;
 
 void reader(){
-    wait(&mutexSem); //lock mutex and increase reader count
+    new_wait(&mutexSem); //lock mutex and increase reader count
     readersCount++;
     if (readersCount == 1){
-        wait(&resourceSem); //if the first reader, lock resource as well
+        new_wait(&resourceSem); //if the first reader, lock resource as well
     }
-    signal(&mutexSem); //unlock mutex for other readers to use
+    new_signal(&mutexSem); //unlock mutex for other readers to use
 
     //reading the resource
 
-    wait(&mutexSem); //lock mutex to decrease reader count
+    new_wait(&mutexSem); //lock mutex to decrease reader count
     readersCount--;
     if (readersCount == 0) { //last reader unlocks resource
-        signal(&resourceSem);
+        new_signal(&resourceSem);
     }
-    signal(&mutexSem); //unlock mutex
+    new_signal(&mutexSem); //unlock mutex
 }
 
 void writer(){
     //wait to write
-    wait(&resourceSem);
+    new_wait(&resourceSem);
 
     //simulate write
 
-    //finih writing
-    signal(&resourceSem);
+    //finish writing
+    new_signal(&resourceSem);
 }
 
 void main(){

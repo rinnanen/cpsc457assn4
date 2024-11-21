@@ -23,7 +23,7 @@ struct Node
     struct Node *next;
 };
 
-void wait(struct Semaphore *sem) {
+void new_wait(struct Semaphore *sem) {
     pthread_mutex_lock(&sem->mutex); // lock thread
     while (sem->value <= 0) { // check if count <= 0, if so wait
         enqueue(&sem->queue, pthread_self());
@@ -34,7 +34,7 @@ void wait(struct Semaphore *sem) {
     pthread_mutex_unlock(&sem->mutex);
 }
 
-void signal(struct Semaphore *sem){
+void new_signal(struct Semaphore *sem){
     pthread_mutex_lock(&sem->mutex); // lock thread
     sem->value++;                    // increment count
     if (!is_empty(&sem->queue)) {   // check if queue is not empty

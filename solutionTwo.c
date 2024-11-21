@@ -1,3 +1,62 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <Semaphore.c>
+
+int readers_count;
+int writers_count;
+struct Semaphore write_mutex_sem;
+struct Semaphore read_mutex_sem;
+struct Semaphore readtry_mutex_sem;
+struct Semaphore resource_sem;
+struct Semaphore rentry_sem;
+
+void writer() {
+    wait(&write_mutex_sem);
+    writers_count++;
+    if (writers_count == 1) {
+        new_wait(&readtry_mutex_sem);
+    }
+
+    new_wait(&write_mutex_sem);
+    new_wait(&resource_sem);
+
+    // read the resource
+
+    new_signal(&resource_sem);
+    new_wait(&write_mutex_sem);
+    writers_count--;
+    if (writers_count == 0) {
+        new_signal(&readtry_mutex_sem);
+    }
+    new_signal(&write_mutex_sem);
+}
+
+void reader() {
+    new_wait(&rentry_sem);
+    new_wait(&readtry_mutex_sem);
+    new_wait(&read_mutex_sem);
+    readers_count++;
+    if (readers_count == 1) {
+        new_wait(&resource_sem);
+    }
+    new_signal(&read_mutex_sem);
+    new_signal(&readtry_mutex_sem);
+    new_signal(&rentry_sem);
+
+    // read the resource
+
+    new_wait(&read_mutex_sem);
+    readers_count--;
+    if (readers_count == 0) {
+        new_signal(&resource_sem);
+    }
+    new_signal(&read_mutex_sem);
+}
+
+
+
+
 //solution2
 // Uses variables
 // • writers: number of writers in the game
