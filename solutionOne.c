@@ -46,20 +46,14 @@ void main(){
 
     //create 10 reader threads
     for (int i = 0; i < 10; i++) {
-        reader_ids[i] = i + 1;  //assign unique Id to readers
-        if (pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]) != 0) {
-            perror("failed to create reader thread");
-            exit(1);
-        }
+        reader_ids[i] = i + 1;  //assign unique id to readers
+        pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]);
     }
 
     // create n writer threads
     for (int i = 0; i < randomVal; i++) {
-        writer_ids[i] = i + 1;  // Assign unique IDs to writers
-        if (pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]) != 0) {
-            perror("Failed to create writer thread");
-            exit(1);
-        }
+        writer_ids[i] = i + 1;  //assign unique id to writer
+        pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]);
     }
 
     //wait for all reader threads to complete
@@ -67,7 +61,7 @@ void main(){
         pthread_join(reader_threads[i], NULL);
     }
 
-    // Wait for all writer threads to complete
+    //wait for all writer threads to complete
     for (int i = 0; i < randomVal; i++) {
         pthread_join(writer_threads[i], NULL);
     }
