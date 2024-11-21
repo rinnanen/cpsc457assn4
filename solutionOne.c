@@ -25,9 +25,58 @@ void reader(){
     signal(&mutex); //unlock mutex
 }
 
-void writer(){}
+void writer(){
+    //wait to write
+    wait(&resource);
 
-void main(){}
+    //simulate write
+
+    //finih writing
+    signal(&resource);
+}
+
+void main(){
+    int randomVal = (rand() % (10 - 0 + 1)) + 0;
+    pthread_t reader_threads[10], writer_threads[randomVal];
+    int reader_ids[10], writer_ids[randomVal];
+
+    //initialize semaphores
+    make_sem(&mutex, 1);
+    make_sem(&resource, 1);
+
+    //create 10 reader threads
+    for (int i = 0; i < 10; i++) {
+        reader_ids[i] = i + 1;  //assign unique Id to readers
+        if (pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]) != 0) {
+            perror("failed to create reader thread");
+            exit(1);
+        }
+    }
+
+    // create n writer threads
+    for (int i = 0; i < randomVal; i++) {
+        writer_ids[i] = i + 1;  // Assign unique IDs to writers
+        if (pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]) != 0) {
+            perror("Failed to create writer thread");
+            exit(1);
+        }
+    }
+
+    //wait for all reader threads to complete
+    for (int i = 0; i < 10; i++) {
+        pthread_join(reader_threads[i], NULL);
+    }
+
+    // Wait for all writer threads to complete
+    for (int i = 0; i < randomVal; i++) {
+        pthread_join(writer_threads[i], NULL);
+    }
+
+    // destroy semaphores
+    semaphore_destroy(&mutex);
+    semaphore_destroy(&resource);
+
+}
 //solution1
 // • Uses an integer variable readers
 // o Shared between readers
