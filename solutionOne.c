@@ -20,19 +20,19 @@ void reader(){
     wait(&mutexSem); //lock mutex to decrease reader count
     readersCount--;
     if (readersCount == 0) { //last reader unlocks resource
-        signal(&resource);
+        signal(&resourceSem);
     }
-    signal(&mutex); //unlock mutex
+    signal(&mutexSem); //unlock mutex
 }
 
 void writer(){
     //wait to write
-    wait(&resource);
+    wait(&resourceSem);
 
     //simulate write
 
     //finih writing
-    signal(&resource);
+    signal(&resourceSem);
 }
 
 void main(){
@@ -41,8 +41,8 @@ void main(){
     int reader_ids[10], writer_ids[randomVal];
 
     //initialize semaphores
-    make_sem(&mutex, 1);
-    make_sem(&resource, 1);
+    make_sem(&mutexSem, 1);
+    make_sem(&resourceSem, 1);
 
     //create 10 reader threads
     for (int i = 0; i < 10; i++) {
@@ -67,8 +67,8 @@ void main(){
     }
 
     // destroy semaphores
-    semaphore_destroy(&mutex);
-    semaphore_destroy(&resource);
+    semaphore_destroy(&mutexSem);
+    semaphore_destroy(&resourceSem);
 
 }
 //solution1
