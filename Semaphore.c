@@ -23,27 +23,24 @@ struct Node
     struct Node *next;
 };
 
-synchronized void wait(Semaphore *sem)
-{
+void wait(struct Semaphore *sem) {
     pthread_mutex_lock(&sem->mutex); // lock thread
-    while (sem->count <= 0)
-    { // check if count <= 0, if so wait
-        enqueue(&sem.queue, &sem->mutex.id);
-        pthread_cond_wait(&sem->cond, &sem->mutex);
+    while (sem->value <= 0) { // check if count <= 0, if so wait
+        enqueue(&sem->queue, pthread_self());
+        pthread_cond_wait(&sem->condition, &sem->mutex);
+        dequeue(&sem->queue);
     }
-    sem->count--; // once count increases, decrement and unlock
+    sem->value--; // once count increases, decrement and unlock
     pthread_mutex_unlock(&sem->mutex);
 }
 
-synchronized void signal(Semaphore *sem){
-    pthread_mutex_lock(&sem.mutex); // lock thread
-    sem.count++;                    // increment count
-    if (!is_empty(&sem->queue))
-    {                        // check if queue is not empty
-        dequeue(&sem->queue) // if not, dequeue element from queue and signal
-            pthread_cond_signal(&sem->condition)
+void signal(struct Semaphore *sem){
+    pthread_mutex_lock(&sem->mutex); // lock thread
+    sem->value++;                    // increment count
+    if (!is_empty(&sem->queue)) {   // check if queue is not empty
+        pthread_cond_signal(&sem->condition);
     }
-    pthread_mutex_unlock(sem->mutex); // unlock thread once finished
+    pthread_mutex_unlock(&sem->mutex); // unlock thread once finished
 }
 
 void enqueue(struct Queue *queue, pthread_t id)
