@@ -81,9 +81,9 @@ bool is_empty(struct Queue *queue)
 void new_wait(struct Semaphore *sem) {
     pthread_mutex_lock(&sem->mutex); // lock thread
     while (sem->value <= 0) { // check if count <= 0, if so wait
-        enqueue(&sem->queue, pthread_self());
+        enqueue(sem->queue, pthread_self());
         pthread_cond_wait(&sem->condition, &sem->mutex);
-        dequeue(&sem->queue);
+        dequeue(sem->queue);
     }
     sem->value--; // once count increases, decrement and unlock
     pthread_mutex_unlock(&sem->mutex);
@@ -92,7 +92,7 @@ void new_wait(struct Semaphore *sem) {
 void new_signal(struct Semaphore *sem){
     pthread_mutex_lock(&sem->mutex); // lock thread
     sem->value++;                    // increment count
-    if (!is_empty(&sem->queue)) {   // check if queue is not empty
+    if (!is_empty(sem->queue)) {   // check if queue is not empty
         pthread_cond_signal(&sem->condition);
     }
     pthread_mutex_unlock(&sem->mutex); // unlock thread once finished
@@ -106,7 +106,7 @@ void make_sem(struct Semaphore *semaphore, int starting_value)
     pthread_cond_init(&semaphore->condition, NULL);
 
     semaphore->queue = (struct Queue *)malloc(sizeof(struct Queue));
-    initialize_queue(&semaphore->queue);
+    initialize_queue(semaphore->queue);
 }
 
 void destroy_sem(struct Semaphore *semaphore)

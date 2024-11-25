@@ -1,14 +1,15 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Semaphore.c>
+#include "Semaphore.c"
 
 int readers_count;
 int writers_count;
 struct Semaphore resource_sem;
 struct Semaphore mutex_sem;
 
-void writer() {
+void *writer(void *arg) {
+    int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
     new_wait(&mutex_sem);
     writers_count++;
     new_signal(&mutex_sem);
@@ -20,9 +21,11 @@ void writer() {
     writers_count--;
     new_signal(&mutex_sem);
     new_signal(&resource_sem);
+    return NULL;
 }
 
-void reader() {
+void *reader(void *arg) {
+    int thread_id = *((int *)arg); 
     new_wait(&mutex_sem);
     if (writers_count > 0 || readers_count == 0) {
         new_signal(&mutex_sem);
@@ -40,45 +43,46 @@ void reader() {
         new_signal(&resource_sem);
     }
     new_signal(&mutex_sem);
+    return NULL;
 }
 
 // duplicated it from sol1
-void main(){
-    int randomVal = (rand() % (10 - 0 + 1)) + 0;
-    pthread_t reader_threads[10], writer_threads[randomVal];
-    int reader_ids[10], writer_ids[randomVal];
+// int main(){
+//     int randomVal = (rand() % (10 - 0 + 1)) + 0;
+//     pthread_t reader_threads[10], writer_threads[randomVal];
+//     int reader_ids[10], writer_ids[randomVal];
 
-    //initialize semaphores
-    make_sem(&resource_sem, 1);
-    make_sem(&mutex_sem, 1);
+//     //initialize semaphores
+//     make_sem(&resource_sem, 1);
+//     make_sem(&mutex_sem, 1);
 
-    //create 10 reader threads
-    for (int i = 0; i < 10; i++) {
-        reader_ids[i] = i + 1;  //assign unique id to readers
-        pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]);
-    }
+//     //create 10 reader threads
+//     for (int i = 0; i < 10; i++) {
+//         reader_ids[i] = i + 1;  //assign unique id to readers
+//         pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]);
+//     }
 
-    // create n writer threads
-    for (int i = 0; i < randomVal; i++) {
-        writer_ids[i] = i + 1;  //assign unique id to writer
-        pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]);
-    }
+//     // create n writer threads
+//     for (int i = 0; i < randomVal; i++) {
+//         writer_ids[i] = i + 1;  //assign unique id to writer
+//         pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]);
+//     }
 
-    //wait for all reader threads to complete
-    for (int i = 0; i < 10; i++) {
-        pthread_join(reader_threads[i], NULL);
-    }
+//     //wait for all reader threads to complete
+//     for (int i = 0; i < 10; i++) {
+//         pthread_join(reader_threads[i], NULL);
+//     }
 
-    //wait for all writer threads to complete
-    for (int i = 0; i < randomVal; i++) {
-        pthread_join(writer_threads[i], NULL);
-    }
+//     //wait for all writer threads to complete
+//     for (int i = 0; i < randomVal; i++) {
+//         pthread_join(writer_threads[i], NULL);
+//     }
 
-    // destroy semaphores
-    semaphore_destroy(&resource_sem, 1);
-    semaphore_destroy(&mutex_sem, 1);
-
-}
+//     // destroy semaphores
+//     semaphore_destroy(&resource_sem, 1);
+//     semaphore_destroy(&mutex_sem, 1);
+//     return 0;
+// }
 
 //solution3
 
