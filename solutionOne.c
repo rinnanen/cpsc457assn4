@@ -1,19 +1,21 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <Semaphore.c>
+#include "Semaphore.c"
 
 int readersCount;
 struct Semaphore resourceSem;
 struct Semaphore mutexSem;
 
 void reader(){
+    printf("Reader %ld is waiting.\n", pthread_self());
     new_wait(&mutexSem); //lock mutex and increase reader count
     readersCount++;
     if (readersCount == 1){
         new_wait(&resourceSem); //if the first reader, lock resource as well
     }
     new_signal(&mutexSem); //unlock mutex for other readers to use
+    printf("Reader %ld is reading.\n", pthread_self());
 
     //reading the resource
 
@@ -23,16 +25,20 @@ void reader(){
         new_signal(&resourceSem);
     }
     new_signal(&mutexSem); //unlock mutex
+    printf("Reader %ld has finished reading.\n", pthread_self());
 }
 
 void writer(){
     //wait to write
+    printf("Writer %ld is waiting.\n", pthread_self());
     new_wait(&resourceSem);
+    printf("Writer %ld is writing.\n", pthread_self());
 
     //simulate write
 
     //finish writing
     new_signal(&resourceSem);
+    printf("Writer %ld has finished writing.\n", pthread_self());
 }
 
 void main(){
