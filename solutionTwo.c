@@ -13,7 +13,7 @@ struct Semaphore rentry_sem;
 
 void *writer(void *arg) {
     int thread_id = *((int *)arg);
-    wait(&write_mutex_sem);
+    new_wait(&write_mutex_sem);
     writers_count++;
     if (writers_count == 1) {
         new_wait(&readtry_mutex_sem);
