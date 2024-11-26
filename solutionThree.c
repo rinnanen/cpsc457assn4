@@ -3,27 +3,12 @@
 #include <stdlib.h>
 #include "Semaphore.h"
 
-
+//functions and variables for solution
 int readers_count;
 int writers_count;
 struct Semaphore resource_sem3;
 struct Semaphore mutex_sem;
 
-void *writer3(void *arg) {
-    int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
-    new_wait(&mutex_sem);
-    writers_count++;
-    new_signal(&mutex_sem);
-    new_wait(&resource_sem3);
-
-    // read the resource
-
-    new_wait(&mutex_sem);
-    writers_count--;
-    new_signal(&mutex_sem);
-    new_signal(&resource_sem3);
-    return NULL;
-}
 
 void *reader3(void *arg) {
     int thread_id = *((int *)arg); 
@@ -44,6 +29,23 @@ void *reader3(void *arg) {
         new_signal(&resource_sem3);
     }
     new_signal(&mutex_sem);
+    return NULL;
+}
+
+//errors if name is only writer
+void *writer3(void *arg) {
+    int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
+    new_wait(&mutex_sem);
+    writers_count++;
+    new_signal(&mutex_sem);
+    new_wait(&resource_sem3);
+
+    // read the resource
+
+    new_wait(&mutex_sem);
+    writers_count--;
+    new_signal(&mutex_sem);
+    new_signal(&resource_sem3);
     return NULL;
 }
 

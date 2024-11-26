@@ -4,6 +4,7 @@
 #include "Semaphore.h"
 
 
+//functions and variables for solution
 int readerCount;
 int writerCount;
 struct Semaphore write_mutex_sem;
@@ -12,29 +13,8 @@ struct Semaphore readtry_mutex_sem;
 struct Semaphore resource_sem2;
 struct Semaphore rentry_sem;
 
-void *writer2(void *arg) {
-    int thread_id = *((int *)arg);
-    new_wait(&write_mutex_sem);
-    writerCount++;
-    if (writerCount == 1) {
-        new_wait(&readtry_mutex_sem);
-    }
 
-    new_wait(&write_mutex_sem);
-    new_wait(&resource_sem2);
-
-    // read the resource
-
-    new_signal(&resource_sem2);
-    new_wait(&write_mutex_sem);
-    writerCount--;
-    if (writerCount == 0) {
-        new_signal(&readtry_mutex_sem);
-    }
-    new_signal(&write_mutex_sem);
-    return NULL;
-}
-
+//errors if name is only reader
 void *reader2(void *arg) {
     int thread_id = *((int *)arg);
     new_wait(&rentry_sem);
@@ -59,6 +39,29 @@ void *reader2(void *arg) {
     return NULL;
 }
 
+//errors if name is only writer
+void *writer2(void *arg) {
+    int thread_id = *((int *)arg);
+    new_wait(&write_mutex_sem);
+    writerCount++;
+    if (writerCount == 1) {
+        new_wait(&readtry_mutex_sem);
+    }
+
+    new_wait(&write_mutex_sem);
+    new_wait(&resource_sem2);
+
+    // read the resource
+
+    new_signal(&resource_sem2);
+    new_wait(&write_mutex_sem);
+    writerCount--;
+    if (writerCount == 0) {
+        new_signal(&readtry_mutex_sem);
+    }
+    new_signal(&write_mutex_sem);
+    return NULL;
+}
 
 
 // duplicated it from sol1

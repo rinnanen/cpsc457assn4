@@ -5,11 +5,12 @@
 
 
 
-
+//functions and variables for solution
 int readersCount;
 struct Semaphore resource_sem1;
 struct Semaphore mutexSem;
 
+//errors if name is only reader
 void *reader1(void *arg) {
     int thread_id = *((int *)arg);
     printf("Reader %ld is waiting.\n", pthread_self());
@@ -33,6 +34,7 @@ void *reader1(void *arg) {
     return NULL;
 }
 
+//errors if name is only writer
 void *writer1(void *arg) {
     int thread_id = *((int *)arg);
     //wait to write
