@@ -80,13 +80,13 @@ void *writer2(void *arg) {
 //     //create 10 reader threads
 //     for (int i = 0; i < 10; i++) {
 //         reader_ids[i] = i + 1;  //assign unique id to readers
-//         pthread_create(&reader_threads[i], NULL, reader, &reader_ids[i]);
+//         pthread_create(&reader_threads[i], NULL, reader2, &reader_ids[i]);
 //     }
 
 //     // create n writer threads
 //     for (int i = 0; i < randomVal; i++) {
 //         writer_ids[i] = i + 1;  //assign unique id to writer
-//         pthread_create(&writer_threads[i], NULL, writer, &writer_ids[i]);
+//         pthread_create(&writer_threads[i], NULL, writer2, &writer_ids[i]);
 //     }
 
 //     //wait for all reader threads to complete
@@ -100,11 +100,11 @@ void *writer2(void *arg) {
 //     }
 
 //     // destroy semaphores
-//     semaphore_destroy(&write_mutex_sem, 1);
-//     semaphore_destroy(&read_mutex_sem, 1);
-//     semaphore_destroy(&readtry_mutex_sem, 1);
-//     semaphore_destroy(&resource_sem2, 1);
-//     semaphore_destroy(&rentry_sem, 1);
+//     destroy_sem(&write_mutex_sem);
+//     destroy_sem(&read_mutex_sem);
+//     destroy_sem(&readtry_mutex_sem);
+//     destroy_sem(&resource_sem2);
+//     destroy_sem(&rentry_sem);
 
 // }
 
