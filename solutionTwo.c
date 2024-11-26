@@ -1,47 +1,48 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Semaphore.c"
+#include "Semaphore.h"
 
-int readers_count;
-int writers_count;
+
+int readerCount;
+int writerCount;
 struct Semaphore write_mutex_sem;
 struct Semaphore read_mutex_sem;
 struct Semaphore readtry_mutex_sem;
-struct Semaphore resource_sem;
+struct Semaphore resource_sem2;
 struct Semaphore rentry_sem;
 
-void *writer(void *arg) {
+void *writer2(void *arg) {
     int thread_id = *((int *)arg);
     new_wait(&write_mutex_sem);
-    writers_count++;
-    if (writers_count == 1) {
+    writerCount++;
+    if (writerCount == 1) {
         new_wait(&readtry_mutex_sem);
     }
 
     new_wait(&write_mutex_sem);
-    new_wait(&resource_sem);
+    new_wait(&resource_sem2);
 
     // read the resource
 
-    new_signal(&resource_sem);
+    new_signal(&resource_sem2);
     new_wait(&write_mutex_sem);
-    writers_count--;
-    if (writers_count == 0) {
+    writerCount--;
+    if (writerCount == 0) {
         new_signal(&readtry_mutex_sem);
     }
     new_signal(&write_mutex_sem);
     return NULL;
 }
 
-void *reader(void *arg) {
+void *reader2(void *arg) {
     int thread_id = *((int *)arg);
     new_wait(&rentry_sem);
     new_wait(&readtry_mutex_sem);
     new_wait(&read_mutex_sem);
-    readers_count++;
-    if (readers_count == 1) {
-        new_wait(&resource_sem);
+    readerCount++;
+    if (readerCount == 1) {
+        new_wait(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
     new_signal(&readtry_mutex_sem);
@@ -50,9 +51,9 @@ void *reader(void *arg) {
     // read the resource
 
     new_wait(&read_mutex_sem);
-    readers_count--;
-    if (readers_count == 0) {
-        new_signal(&resource_sem);
+    readerCount--;
+    if (readerCount == 0) {
+        new_signal(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
     return NULL;
@@ -70,7 +71,7 @@ void *reader(void *arg) {
 //     make_sem(&write_mutex_sem, 1);
 //     make_sem(&read_mutex_sem, 1);
 //     make_sem(&readtry_mutex_sem, 1);
-//     make_sem(&resource_sem, 1);
+//     make_sem(&resource_sem2, 1);
 //     make_sem(&rentry_sem, 1);
 
 //     //create 10 reader threads
@@ -99,7 +100,7 @@ void *reader(void *arg) {
 //     semaphore_destroy(&write_mutex_sem, 1);
 //     semaphore_destroy(&read_mutex_sem, 1);
 //     semaphore_destroy(&readtry_mutex_sem, 1);
-//     semaphore_destroy(&resource_sem, 1);
+//     semaphore_destroy(&resource_sem2, 1);
 //     semaphore_destroy(&rentry_sem, 1);
 
 // }

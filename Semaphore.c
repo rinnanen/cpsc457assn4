@@ -2,26 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "Semaphore.h"
 
-struct Semaphore
-{
-    pthread_mutex_t mutex;
-    pthread_cond_t condition;
-    int value;
-    struct Queue *queue;
-};
-
-struct Queue
-{
-    struct Node *front;
-    struct Node *rear;
-};
-
-struct Node
-{
-    pthread_t id;
-    struct Node *next;
-};
 
 void enqueue(struct Queue *queue, pthread_t id)
 {
@@ -99,8 +81,7 @@ void new_signal(struct Semaphore *sem){
 }
 
 
-void make_sem(struct Semaphore *semaphore, int starting_value)
-{
+void make_sem(struct Semaphore *semaphore, int starting_value){
     semaphore->value = starting_value;
     pthread_mutex_init(&semaphore->mutex, NULL);
     pthread_cond_init(&semaphore->condition, NULL);
@@ -109,8 +90,7 @@ void make_sem(struct Semaphore *semaphore, int starting_value)
     initialize_queue(semaphore->queue);
 }
 
-void destroy_sem(struct Semaphore *semaphore)
-{
+void destroy_sem(struct Semaphore *semaphore){
 
     free(semaphore->queue);
 
@@ -118,11 +98,10 @@ void destroy_sem(struct Semaphore *semaphore)
     pthread_cond_destroy(&semaphore->condition);
 }
 
-int main()
-{
-    struct Semaphore semaphore;
-    make_sem(&semaphore, 1);
+// int main(){
+//     struct Semaphore semaphore;
+//     make_sem(&semaphore, 1);
 
-    destroy_sem(&semaphore);
-    return 0;
-}
+//     destroy_sem(&semaphore);
+//     return 0;
+// }

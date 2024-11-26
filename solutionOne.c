@@ -1,19 +1,22 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Semaphore.c"
+#include "Semaphore.h"
+
+
+
 
 int readersCount;
-struct Semaphore resourceSem;
+struct Semaphore resource_sem1;
 struct Semaphore mutexSem;
 
-void *reader(void *arg) {
+void *reader1(void *arg) {
     int thread_id = *((int *)arg);
     printf("Reader %ld is waiting.\n", pthread_self());
     new_wait(&mutexSem); //lock mutex and increase reader count
     readersCount++;
     if (readersCount == 1){
-        new_wait(&resourceSem); //if the first reader, lock resource as well
+        new_wait(&resource_sem1); //if the first reader, lock resource as well
     }
     new_signal(&mutexSem); //unlock mutex for other readers to use
     printf("Reader %ld is reading.\n", pthread_self());
@@ -23,24 +26,24 @@ void *reader(void *arg) {
     new_wait(&mutexSem); //lock mutex to decrease reader count
     readersCount--;
     if (readersCount == 0) { //last reader unlocks resource
-        new_signal(&resourceSem);
+        new_signal(&resource_sem1);
     }
     new_signal(&mutexSem); //unlock mutex
     printf("Reader %ld has finished reading.\n", pthread_self());
     return NULL;
 }
 
-void *writer(void *arg) {
+void *writer1(void *arg) {
     int thread_id = *((int *)arg);
     //wait to write
     printf("Writer %ld is waiting.\n", pthread_self());
-    new_wait(&resourceSem);
+    new_wait(&resource_sem1);
     printf("Writer %ld is writing.\n", pthread_self());
 
     //simulate write
 
     //finish writing
-    new_signal(&resourceSem);
+    new_signal(&resource_sem1);
     printf("Writer %ld has finished writing.\n", pthread_self());
     return NULL;
 }
@@ -52,7 +55,7 @@ void *writer(void *arg) {
 
 //     //initialize semaphores
 //     make_sem(&mutexSem, 1);
-//     make_sem(&resourceSem, 1);
+//     make_sem(&resource_sem1, 1);
 
 //     //create 10 reader threads
 //     for (int i = 0; i < 10; i++) {
@@ -78,7 +81,7 @@ void *writer(void *arg) {
 
 //     // destroy semaphores
 //     semaphore_destroy(&mutexSem);
-//     semaphore_destroy(&resourceSem);
+//     semaphore_destroy(&resource_sem1);
 //     return 0;
 // }
 //solution1

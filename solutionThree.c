@@ -1,35 +1,36 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Semaphore.c"
+#include "Semaphore.h"
+
 
 int readers_count;
 int writers_count;
-struct Semaphore resource_sem;
+struct Semaphore resource_sem3;
 struct Semaphore mutex_sem;
 
-void *writer(void *arg) {
+void *writer3(void *arg) {
     int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
     new_wait(&mutex_sem);
     writers_count++;
     new_signal(&mutex_sem);
-    new_wait(&resource_sem);
+    new_wait(&resource_sem3);
 
     // read the resource
 
     new_wait(&mutex_sem);
     writers_count--;
     new_signal(&mutex_sem);
-    new_signal(&resource_sem);
+    new_signal(&resource_sem3);
     return NULL;
 }
 
-void *reader(void *arg) {
+void *reader3(void *arg) {
     int thread_id = *((int *)arg); 
     new_wait(&mutex_sem);
     if (writers_count > 0 || readers_count == 0) {
         new_signal(&mutex_sem);
-        new_wait(&resource_sem);
+        new_wait(&resource_sem3);
         new_wait(&mutex_sem);
     }
     readers_count++;
@@ -40,7 +41,7 @@ void *reader(void *arg) {
     new_wait(&mutex_sem);
     readers_count--;
     if (readers_count == 0) {
-        new_signal(&resource_sem);
+        new_signal(&resource_sem3);
     }
     new_signal(&mutex_sem);
     return NULL;
@@ -53,7 +54,7 @@ void *reader(void *arg) {
 //     int reader_ids[10], writer_ids[randomVal];
 
 //     //initialize semaphores
-//     make_sem(&resource_sem, 1);
+//     make_sem(&resource_sem3, 1);
 //     make_sem(&mutex_sem, 1);
 
 //     //create 10 reader threads
@@ -79,7 +80,7 @@ void *reader(void *arg) {
 //     }
 
 //     // destroy semaphores
-//     semaphore_destroy(&resource_sem, 1);
+//     semaphore_destroy(&resource_sem3, 1);
 //     semaphore_destroy(&mutex_sem, 1);
 //     return 0;
 // }
