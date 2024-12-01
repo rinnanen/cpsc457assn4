@@ -60,7 +60,7 @@ void *writer2(void *arg) {
         new_wait(&readtry_mutex_sem);
     }
 
-    new_wait(&write_mutex_sem);
+    new_signal(&write_mutex_sem);
     printf("Writer %ld is waiting for resource access.\n", (unsigned long)pthread_self());
     new_wait(&resource_sem2);
 
