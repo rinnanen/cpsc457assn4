@@ -22,6 +22,7 @@ void *reader3(void *arg) {
     new_signal(&mutex_sem);
 
     // read the resource
+    sleep(1);
 
     new_wait(&mutex_sem);
     readers_count--;
@@ -41,6 +42,7 @@ void *writer3(void *arg) {
     new_wait(&resource_sem3);
 
     // read the resource
+    sleep(1);
 
     new_wait(&mutex_sem);
     writers_count--;

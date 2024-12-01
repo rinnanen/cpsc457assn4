@@ -23,6 +23,7 @@ void *reader1(void *arg) {
     printf("Reader %ld is reading.\n", (unsigned long)pthread_self());
 
     //reading the resource
+    sleep(1);
 
     new_wait(&mutexSem); //lock mutex to decrease reader count
     readersCount--;
@@ -43,6 +44,7 @@ void *writer1(void *arg) {
     printf("Writer %ld is writing.\n", (unsigned long)pthread_self());
 
     //simulate write
+    sleep(1);
 
     //finish writing
     new_signal(&resource_sem1);
@@ -50,42 +52,43 @@ void *writer1(void *arg) {
     return NULL;
 }
 
-// int main(){
-//     int randomVal = (rand() % (10 - 0 + 1)) + 0;
-//     pthread_t reader_threads[10], writer_threads[randomVal];
-//     int reader_ids[10], writer_ids[randomVal];
+int main(){
+    int randomVal = (rand() % (10 - 0 + 1)) + 0;
+    pthread_t reader_threads[10], writer_threads[randomVal];
+    int reader_ids[10], writer_ids[randomVal];
 
-//     //initialize semaphores
-//     make_sem(&mutexSem, 1);
-//     make_sem(&resource_sem1, 1);
+    //initialize semaphores
+    make_sem(&mutexSem, 1);
+    make_sem(&resource_sem1, 1);
 
-//     //create 10 reader threads
-//     for (int i = 0; i < 10; i++) {
-//         reader_ids[i] = i + 1;  //assign unique id to readers
-//         pthread_create(&reader_threads[i], NULL, reader1, &reader_ids[i]);
-//     }
+    //create 10 reader threads
+    for (int i = 0; i < 10; i++) {
+        reader_ids[i] = i + 1;  //assign unique id to readers
+        pthread_create(&reader_threads[i], NULL, reader1, &reader_ids[i]);
+    }
 
-//     // create n writer threads
-//     for (int i = 0; i < randomVal; i++) {
-//         writer_ids[i] = i + 1;  //assign unique id to writer
-//         pthread_create(&writer_threads[i], NULL, writer1, &writer_ids[i]);
-//     }
+    // create n writer threads
+    for (int i = 0; i < randomVal; i++) {
+        writer_ids[i] = i + 1;  //assign unique id to writer
+        pthread_create(&writer_threads[i], NULL, writer1, &writer_ids[i]);
+    }
 
-//     //wait for all reader threads to complete
-//     for (int i = 0; i < 10; i++) {
-//         pthread_join(reader_threads[i], NULL);
-//     }
+    //wait for all reader threads to complete
+    for (int i = 0; i < 10; i++) {
+        pthread_join(reader_threads[i], NULL);
+    }
 
-//     //wait for all writer threads to complete
-//     for (int i = 0; i < randomVal; i++) {
-//         pthread_join(writer_threads[i], NULL);
-//     }
+    //wait for all writer threads to complete
+    for (int i = 0; i < randomVal; i++) {
+        pthread_join(writer_threads[i], NULL);
+    }
 
-//     // destroy semaphores
-//     destroy_sem(&mutexSem);
-//     destroy_sem(&resource_sem1);
-//     return 0;
-// }
+    // destroy semaphores
+    destroy_sem(&mutexSem);
+    destroy_sem(&resource_sem1);
+    return 0;
+}
+
 //solution1
 // • Uses an integer variable readers
 // o Shared between readers

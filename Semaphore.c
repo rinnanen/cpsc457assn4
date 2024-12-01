@@ -98,10 +98,10 @@ void destroy_sem(struct Semaphore *semaphore){
     pthread_cond_destroy(&semaphore->condition);
 }
 
-// int main(){
-//     struct Semaphore semaphore;
-//     make_sem(&semaphore, 1);
+//int main(){
+    //struct Semaphore semaphore;
+    //make_sem(&semaphore, 1);
 
-//     destroy_sem(&semaphore);
-//     return 0;
-// }
+    //destroy_sem(&semaphore);
+    //return 0;
+//}
