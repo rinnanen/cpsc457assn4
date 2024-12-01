@@ -12,6 +12,7 @@ struct Semaphore rentry_sem;
 
 void *reader2(void *arg);
 void *writer2(void *arg);
+int run_sol_two();
 
 
 #endif // SOLUTIONTWO.H

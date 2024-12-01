@@ -10,5 +10,6 @@ struct Semaphore mutexSem;
 
 void *reader1(void *arg);
 void *writer1(void *arg);
+int run_sol_one();
 
 #endif //SOLUTIONONE.H
