@@ -53,7 +53,7 @@ void *writer1(void *arg) {
     return NULL;
 }
 
-int main(){
+int run_sol_one() {
     int randomVal = (rand() % (10 - 0 + 1)) + 0;
     pthread_t reader_threads[10], writer_threads[randomVal];
     int reader_ids[10], writer_ids[randomVal];
@@ -88,6 +88,10 @@ int main(){
     destroy_sem(&mutexSem);
     destroy_sem(&resource_sem1);
     return 0;
+}
+
+int main() {
+    run_sol_one();
 }
 
 //solution1

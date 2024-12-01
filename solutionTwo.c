@@ -86,7 +86,7 @@ void *writer2(void *arg) {
 
 
 // duplicated it from sol1
-int main(){
+int run_sol_two() {
     int randomVal = (rand() % (10 - 0 + 1)) + 0;
     pthread_t reader_threads[10], writer_threads[randomVal];
     int reader_ids[10], writer_ids[randomVal];
@@ -129,6 +129,9 @@ int main(){
 
 }
 
+int main() {
+    run_sol_two();
+}
 
 //solution2
 // Uses variables

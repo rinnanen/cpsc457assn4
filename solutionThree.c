@@ -64,7 +64,7 @@ void *writer3(void *arg) {
 }
 
 // duplicated it from sol1
-int main(){
+int run_sol_three(){
     int randomVal = (rand() % (10 - 0 + 1)) + 0;
     pthread_t reader_threads[10], writer_threads[randomVal];
     int reader_ids[10], writer_ids[randomVal];
@@ -99,6 +99,10 @@ int main(){
     destroy_sem(&resource_sem3);
     destroy_sem(&mutex_sem);
     return 0;
+}
+
+int main() {
+    run_sol_three();
 }
 
 //solution3
