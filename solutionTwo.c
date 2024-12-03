@@ -35,20 +35,16 @@ void *reader2(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
 
-    printf("Reader %ld is waiting to enter.\n", (unsigned long)pthread_self());
     new_wait(&rentry_sem);
     new_wait(&readtry_mutex_sem);
     new_wait(&read_mutex_sem);
     readerCount++;
     if (readerCount == 1) {
-        printf("Reader %ld is locking the resource for readers.\n", (unsigned long)pthread_self());
         new_wait(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
     new_signal(&readtry_mutex_sem);
     new_signal(&rentry_sem);
-
-    printf("Reader %ld is reading.\n", (unsigned long)pthread_self());
 
     sleep(1);
     // read the resource
@@ -57,11 +53,9 @@ void *reader2(void *arg) {
     new_wait(&read_mutex_sem);
     readerCount--;
     if (readerCount == 0) {
-        printf("Reader %ld is unlocking the resource for writers.\n", (unsigned long)pthread_self());
         new_signal(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
-    printf("Reader %ld has finished reading.\n", (unsigned long)pthread_self());
 
     double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
     reader_total += reader_tat;
@@ -77,35 +71,26 @@ void *writer2(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
 
-    printf("Writer %ld is waiting to enter.\n", (unsigned long)pthread_self());
     new_wait(&write_mutex_sem);
-    printf("Writer %ld has acquired write mutex.\n", (unsigned long)pthread_self());
     writerCount++;
     if (writerCount == 1) {
-        printf("Writer %ld is locking the read-try mutex.\n", (unsigned long)pthread_self());
         new_wait(&readtry_mutex_sem);
     }
 
     new_signal(&write_mutex_sem);
-    printf("Writer %ld is waiting for resource access.\n", (unsigned long)pthread_self());
     new_wait(&resource_sem2);
 
     // read the resource
-    printf("Writer %ld is writing.\n", (unsigned long)pthread_self());
-
     sleep(1);
 
     clock_t end = clock();
     new_signal(&resource_sem2);
-    printf("Writer %ld has finished writing and released the resource.\n", (unsigned long)pthread_self());
     new_wait(&write_mutex_sem);
     writerCount--;
     if (writerCount == 0) {
-        printf("Writer %ld is unlocking the read-try mutex (last writer).\n", (unsigned long)pthread_self());
         new_signal(&readtry_mutex_sem);
     }
     new_signal(&write_mutex_sem);
-    printf("Writer %ld has released the write mutex.\n", (unsigned long)pthread_self());
     
     double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
     writer_total += writer_tat;

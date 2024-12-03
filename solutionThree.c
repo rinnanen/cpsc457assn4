@@ -28,17 +28,14 @@ typedef struct {
 void *reader3(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
-    printf("Reader %d is attempting to read.\n", thread_id);
 
     new_wait(&mutex_sem);
     if (writers_count > 0 || readers_count == 0) {
-        printf("Reader %d is waiting as a writer is active or no readers are present.\n", thread_id);
         new_signal(&mutex_sem);
         new_wait(&resource_sem3);
         new_wait(&mutex_sem);
     }
     readers_count++;
-    printf("Reader %d is reading. Total readers: %d.\n", thread_id, readers_count);
     new_signal(&mutex_sem);
 
     // read the resource
@@ -47,9 +44,7 @@ void *reader3(void *arg) {
     clock_t end = clock();
     new_wait(&mutex_sem);
     readers_count--;
-    printf("Reader %d has finished reading. Remaining readers: %d.\n", thread_id, readers_count);
     if (readers_count == 0) {
-        printf("Reader %d is releasing the resource as no readers are left.\n", thread_id);
         new_signal(&resource_sem3);
     }
     new_signal(&mutex_sem);
@@ -67,22 +62,18 @@ void *reader3(void *arg) {
 void *writer3(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
-    printf("Writer %d is attempting to write.\n", thread_id);
 
     new_wait(&mutex_sem);
     writers_count++;
-    printf("Writer %d is waiting to acquire the resource. Total writers: %d.\n", thread_id, writers_count);
     new_signal(&mutex_sem);
     new_wait(&resource_sem3);
 
     // read the resource
-    printf("Writer %d is writing.\n", thread_id);
     sleep(1);
 
     clock_t end = clock();
     new_wait(&mutex_sem);
     writers_count--;
-    printf("Writer %d has finished writing. Remaining writers: %d.\n", thread_id, writers_count);
     new_signal(&mutex_sem);
     new_signal(&resource_sem3);
 

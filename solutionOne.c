@@ -29,14 +29,12 @@ typedef struct {
 void *reader1(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
-    printf("Reader %ld is waiting.\n", (unsigned long)pthread_self());
     new_wait(&mutexSem); //lock mutex and increase reader count
     readersCount++;
     if (readersCount == 1){
         new_wait(&resource_sem1); //if the first reader, lock resource as well
     }
     new_signal(&mutexSem); //unlock mutex for other readers to use
-    printf("Reader %ld is reading.\n", (unsigned long)pthread_self());
 
     //reading the resource
     sleep(1);
@@ -48,7 +46,6 @@ void *reader1(void *arg) {
         new_signal(&resource_sem1);
     }
     new_signal(&mutexSem); //unlock mutex
-    printf("Reader %ld has finished reading.\n", (unsigned long)pthread_self());
 
     double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
     reader_total += reader_tat;
@@ -64,9 +61,7 @@ void *writer1(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
     //wait to write
-    printf("Writer %ld is waiting.\n", (unsigned long)pthread_self());
     new_wait(&resource_sem1);
-    printf("Writer %ld is writing.\n", (unsigned long)pthread_self());
 
     //simulate write
     sleep(1);
@@ -74,7 +69,6 @@ void *writer1(void *arg) {
     //finish writing
     clock_t end = clock();
     new_signal(&resource_sem1);
-    printf("Writer %ld has finished writing.\n", (unsigned long)pthread_self());
 
     double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
     writer_total += writer_tat;
