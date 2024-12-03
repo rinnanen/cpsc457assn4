@@ -121,25 +121,25 @@ tat_results run_sol_three(int num_writers) {
     destroy_sem(&resource_sem3);
     destroy_sem(&mutex_sem);
 
-    tat_results results;
+    tat_results results3;
 
     double avg_reader3 = 0;
     if (reader_count3 > 0) {
         double avg_reader3 = reader_total3 / reader_count3;
     }
-    results.reader_tat3 = avg_reader3;
+    results3.reader_tat3 = avg_reader3;
 
     double avg_writer3 = 0;
     if (writer_count3 > 0) {
         double avg_writer3 = writer_total3 / writer_count3;
     }
-    results.writer_tat3 = avg_writer3;
+    results3.writer_tat3 = avg_writer3;
 
     double avg_both3 = 0;
     if (both_count3 > 0) {
         double avg_both3 = both_total3 / both_count3;
     }
-    results.both_tat3 = avg_both3;
+    results3.both_tat3 = avg_both3;
 
-    return results;
+    return results3;
 }
