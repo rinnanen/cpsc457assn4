@@ -7,27 +7,27 @@
 
 
 //functions and variables for solution
-int readerCount;
-int writerCount;
+int readerCount2;
+int writerCount2;
 struct Semaphore write_mutex_sem;
 struct Semaphore read_mutex_sem;
 struct Semaphore readtry_mutex_sem;
 struct Semaphore resource_sem2;
 struct Semaphore rentry_sem;
 
-double reader_total = 0;
-int reader_count = 0;
+double reader_total2 = 0;
+int reader_count2 = 0;
 
-double writer_total = 0;
-int writer_count = 0;
+double writer_total2 = 0;
+int writer_count2 = 0;
 
-double both_total = 0;
-int both_count = 0;
+double both_total2 = 0;
+int both_count2 = 0;
 
 typedef struct {
-    double reader_tat;
-    double writer_tat;
-    double both_tat;
+    double reader_tat2;
+    double writer_tat2;
+    double both_tat2;
 } tat_results;
 
 //errors if name is only reader
@@ -38,8 +38,8 @@ void *reader2(void *arg) {
     new_wait(&rentry_sem);
     new_wait(&readtry_mutex_sem);
     new_wait(&read_mutex_sem);
-    readerCount++;
-    if (readerCount == 1) {
+    readerCount2++;
+    if (readerCount2 == 1) {
         new_wait(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
@@ -51,17 +51,17 @@ void *reader2(void *arg) {
 
     clock_t end = clock();
     new_wait(&read_mutex_sem);
-    readerCount--;
-    if (readerCount == 0) {
+    readerCount2--;
+    if (readerCount2 == 0) {
         new_signal(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
 
     double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
-    reader_total += reader_tat;
-    both_total += reader_tat;
-    reader_count++;
-    both_count++;
+    reader_total2 += reader_tat;
+    both_total2 += reader_tat;
+    reader_count2++;
+    both_count2++;
 
     return NULL;
 }
@@ -72,8 +72,8 @@ void *writer2(void *arg) {
     int thread_id = *((int *)arg);
 
     new_wait(&write_mutex_sem);
-    writerCount++;
-    if (writerCount == 1) {
+    writerCount2++;
+    if (writerCount2 == 1) {
         new_wait(&readtry_mutex_sem);
     }
 
@@ -86,17 +86,17 @@ void *writer2(void *arg) {
     clock_t end = clock();
     new_signal(&resource_sem2);
     new_wait(&write_mutex_sem);
-    writerCount--;
-    if (writerCount == 0) {
+    writerCount2--;
+    if (writerCount2 == 0) {
         new_signal(&readtry_mutex_sem);
     }
     new_signal(&write_mutex_sem);
     
-    double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
-    writer_total += writer_tat;
-    both_total += writer_tat;
-    writer_count++;
-    both_count++;
+    double writer_tat2 = (double)(end - start) / CLOCKS_PER_SEC;
+    writer_total2 += writer_tat2;
+    both_total2 += writer_tat2;
+    writer_count2++;
+    both_count2++;
 
     return NULL;
 }
@@ -144,25 +144,25 @@ tat_results run_sol_two(int num_writers) {
     destroy_sem(&rentry_sem);
 
 
-    tat_results results;
+    tat_results results2;
 
-    double avg_reader = 0;
-    if (reader_count > 0) {
-        double avg_reader = reader_total / reader_count;
+    double avg_reader2 = 0;
+    if (reader_count2 > 0) {
+        double avg_reader2 = reader_total2 / reader_count2;
     }
-    results.reader_tat = avg_reader;
+    results2.reader_tat2 = avg_reader2;
 
-    double avg_writer = 0;
-    if (writer_count > 0) {
-        double avg_writer = writer_total / writer_count;
+    double avg_write2 = 0;
+    if (writer_count2 > 0) {
+        double avg_writer2 = writer_total2 / writer_count2;
     }
-    results.writer_tat = avg_writer;
+    results2.writer_tat2 = avg_writer2;
 
-    double avg_both = 0;
-    if (both_count > 0) {
-        double avg_both = both_total / both_count;
+    double avg_both2 = 0;
+    if (both_count2 > 0) {
+        double avg_both2 = both_total2 / both_count2;
     }
-    results.both_tat = avg_both;
+    results2.both_tat2 = avg_both2;
 
-    return results;
+    return results2;
 }
