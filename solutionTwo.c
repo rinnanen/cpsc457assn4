@@ -152,7 +152,7 @@ tat_results run_sol_two(int num_writers) {
     }
     results2.reader_tat2 = avg_reader2;
 
-    double avg_write2 = 0;
+    double avg_writer2 = 0;
     if (writer_count2 > 0) {
         double avg_writer2 = writer_total2 / writer_count2;
     }
