@@ -27,17 +27,17 @@ int main() {
     printf("Readers-Writers Solution 1 (time in seconds)");
     printf("Writers\tAVG reader TAT\tAVG writer TAT\tAVGTAT");
     for (int i = 0; i < 11; i++) {
-        run_sol_one(i);
+        struct tat_results sol_one = run_sol_one(i);
     }
 
     // measure solution 2
     for (int i = 0; i < 11; i++) {
-        run_sol_two(i);
+        struct tat_results sol_two = run_sol_two(i);
     }
 
     // measure solution 3
     for (int i = 0; i < 11; i++) {
-        run_sol_three(i);
+        struct tat_results sol_three = run_sol_three(i);
     }
 
     return 0;
