@@ -18,7 +18,7 @@ double sol2_writer = 0;
 double sol2_both = 0;
 
 double sol3_reader = 0;
-double sol3_writer = 0
+double sol3_writer = 0;
 double sol3_both = 0;
 
 int main() {
