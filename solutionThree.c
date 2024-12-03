@@ -5,24 +5,24 @@
 #include "Semaphore.h"
 
 //functions and variables for solution
-int readers_count;
-int writers_count;
+int readers_count3;
+int writers_count3;
 struct Semaphore resource_sem3;
 struct Semaphore mutex_sem;
 
-double reader_total = 0;
-int reader_count = 0;
+double reader_total3 = 0;
+int reader_count3 = 0;
 
-double writer_total = 0;
-int writer_count = 0;
+double writer_total3 = 0;
+int writer_count3 = 0;
 
-double both_total = 0;
-int both_count = 0;
+double both_total3 = 0;
+int both_count3 = 0;
 
 typedef struct {
-    double reader_tat;
-    double writer_tat;
-    double both_tat;
+    double reader_tat3;
+    double writer_tat3;
+    double both_tat3;
 } tat_results;
 
 void *reader3(void *arg) {
@@ -30,12 +30,12 @@ void *reader3(void *arg) {
     int thread_id = *((int *)arg);
 
     new_wait(&mutex_sem);
-    if (writers_count > 0 || readers_count == 0) {
+    if (writers_count3 > 0 || readers_count3 == 0) {
         new_signal(&mutex_sem);
         new_wait(&resource_sem3);
         new_wait(&mutex_sem);
     }
-    readers_count++;
+    readers_count3++;
     new_signal(&mutex_sem);
 
     // read the resource
@@ -43,17 +43,17 @@ void *reader3(void *arg) {
 
     clock_t end = clock();
     new_wait(&mutex_sem);
-    readers_count--;
-    if (readers_count == 0) {
+    readers_count3--;
+    if (readers_count3 == 0) {
         new_signal(&resource_sem3);
     }
     new_signal(&mutex_sem);
 
     double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
-    reader_total += reader_tat;
-    both_total += reader_tat;
-    reader_count++;
-    both_count++;
+    reader_total3 += reader_tat;
+    both_total3 += reader_tat;
+    reader_count3++;
+    both_count3++;
 
     return NULL;
 }
@@ -64,7 +64,7 @@ void *writer3(void *arg) {
     int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
 
     new_wait(&mutex_sem);
-    writers_count++;
+    writers_count3++;
     new_signal(&mutex_sem);
     new_wait(&resource_sem3);
 
@@ -73,15 +73,15 @@ void *writer3(void *arg) {
 
     clock_t end = clock();
     new_wait(&mutex_sem);
-    writers_count--;
+    writers_count3--;
     new_signal(&mutex_sem);
     new_signal(&resource_sem3);
 
     double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
-    writer_total += writer_tat;
-    both_total += writer_tat;
-    writer_count++;
-    both_count++;
+    writer_total3 += writer_tat;
+    both_total3 += writer_tat;
+    writer_count3++;
+    both_count3++;
 
     return NULL;
 }
@@ -123,23 +123,23 @@ tat_results run_sol_three(int num_writers) {
 
     tat_results results;
 
-    double avg_reader = 0;
-    if (reader_count > 0) {
-        double avg_reader = reader_total / reader_count;
+    double avg_reader3 = 0;
+    if (reader_count3 > 0) {
+        double avg_reader3 = reader_total3 / reader_count3;
     }
-    results.reader_tat = avg_reader;
+    results.reader_tat3 = avg_reader3;
 
-    double avg_writer = 0;
-    if (writer_count > 0) {
-        double avg_writer = writer_total / writer_count;
+    double avg_writer3 = 0;
+    if (writer_count3 > 0) {
+        double avg_writer3 = writer_total3 / writer_count3;
     }
-    results.writer_tat = avg_writer;
+    results.writer_tat3 = avg_writer3;
 
-    double avg_both = 0;
-    if (both_count > 0) {
-        double avg_both = both_total / both_count;
+    double avg_both3 = 0;
+    if (both_count3 > 0) {
+        double avg_both3 = both_total3 / both_count3;
     }
-    results.both_tat = avg_both;
+    results.both_tat3 = avg_both3;
 
     return results;
 }
