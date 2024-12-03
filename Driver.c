@@ -24,19 +24,19 @@ double sol3_both = 0;
 int main() {
 
     // measure solution 1
-    print
-    for (int i = 0; i < 10; i++) {
+    printf("Readers-Writers Solution 1 (time in seconds)");
+    printf("Writers\tAVG reader TAT\tAVG writer TAT\tAVGTAT");
+    for (int i = 0; i < 11; i++) {
         run_sol_one(i);
-
     }
 
     // measure solution 2
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 11; i++) {
         run_sol_two(i);
     }
 
     // measure solution 3
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 11; i++) {
         run_sol_three(i);
     }
 
