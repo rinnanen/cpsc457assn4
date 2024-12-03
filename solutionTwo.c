@@ -15,9 +15,24 @@ struct Semaphore readtry_mutex_sem;
 struct Semaphore resource_sem2;
 struct Semaphore rentry_sem;
 
+double reader_total = 0;
+int reader_count = 0;
+
+double writer_total = 0;
+int writer_count = 0;
+
+double both_total = 0;
+int both_count = 0;
+
+typedef struct {
+    double reader_tat;
+    double writer_tat;
+    double both_tat;
+} tat_results;
 
 //errors if name is only reader
 void *reader2(void *arg) {
+    clock_t start = clock();
     int thread_id = *((int *)arg);
 
     printf("Reader %ld is waiting to enter.\n", (unsigned long)pthread_self());
@@ -38,6 +53,7 @@ void *reader2(void *arg) {
     sleep(1);
     // read the resource
 
+    clock_t end = clock();
     new_wait(&read_mutex_sem);
     readerCount--;
     if (readerCount == 0) {
@@ -46,11 +62,19 @@ void *reader2(void *arg) {
     }
     new_signal(&read_mutex_sem);
     printf("Reader %ld has finished reading.\n", (unsigned long)pthread_self());
+
+    double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    reader_total += reader_tat;
+    both_total += reader_tat;
+    reader_count++;
+    both_count++;
+
     return NULL;
 }
 
 //errors if name is only writer
 void *writer2(void *arg) {
+    clock_t start = clock();
     int thread_id = *((int *)arg);
 
     printf("Writer %ld is waiting to enter.\n", (unsigned long)pthread_self());
@@ -71,6 +95,7 @@ void *writer2(void *arg) {
 
     sleep(1);
 
+    clock_t end = clock();
     new_signal(&resource_sem2);
     printf("Writer %ld has finished writing and released the resource.\n", (unsigned long)pthread_self());
     new_wait(&write_mutex_sem);
@@ -81,15 +106,21 @@ void *writer2(void *arg) {
     }
     new_signal(&write_mutex_sem);
     printf("Writer %ld has released the write mutex.\n", (unsigned long)pthread_self());
+    
+    double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    writer_total += writer_tat;
+    both_total += writer_tat;
+    writer_count++;
+    both_count++;
+
     return NULL;
 }
 
 
 // duplicated it from sol1
-int run_sol_two() {
-    int randomVal = (rand() % (10 - 0 + 1)) + 0;
-    pthread_t reader_threads[10], writer_threads[randomVal];
-    int reader_ids[10], writer_ids[randomVal];
+tat_results run_sol_two(int num_writers) {
+    pthread_t reader_threads[10], writer_threads[num_writers];
+    int reader_ids[10], writer_ids[num_writers];
 
     //initialize semaphores
     make_sem(&write_mutex_sem, 1);
@@ -105,7 +136,7 @@ int run_sol_two() {
     }
 
     // create n writer threads
-    for (int i = 0; i < randomVal; i++) {
+    for (int i = 0; i < num_writers; i++) {
         writer_ids[i] = i + 1;  //assign unique id to writer
         pthread_create(&writer_threads[i], NULL, writer2, &writer_ids[i]);
     }
@@ -116,7 +147,7 @@ int run_sol_two() {
     }
 
     //wait for all writer threads to complete
-    for (int i = 0; i < randomVal; i++) {
+    for (int i = 0; i < num_writers; i++) {
         pthread_join(writer_threads[i], NULL);
     }
 
@@ -127,63 +158,26 @@ int run_sol_two() {
     destroy_sem(&resource_sem2);
     destroy_sem(&rentry_sem);
 
+
+    tat_results results;
+
+    double avg_reader = 0;
+    if (reader_count > 0) {
+        double avg_reader = reader_total / reader_count;
+    }
+    results.reader_tat = avg_reader;
+
+    double avg_writer = 0;
+    if (writer_count > 0) {
+        double avg_writer = writer_total / writer_count;
+    }
+    results.writer_tat = avg_writer;
+
+    double avg_both = 0;
+    if (both_count > 0) {
+        double avg_both = both_total / both_count;
+    }
+    results.both_tat = avg_both;
+
+    return results;
 }
-
-int main() {
-    run_sol_two();
-}
-
-//solution2
-// Uses variables
-// • writers: number of writers in the game
-// o Shared by writers
-// o Initially 0
-
-// • readers: number of readers in the game
-// o Shared by readers
-// o Initially 0
-
-// • Uses 5 semaphores!
-// • 2 shared by readers and writers:
-// • resource: controls access to the resource
-// • readtry: allows writers to “bully” readers from trying
-
-// • 1 semaphore shared by writers
-// • wmutex: avoids race conditions on variable writers
-
-// • 2 semaphores shared by readers
-// • rmutex: avoids race conditions on variable readers
-// • rentry: needed to favor writers
-
-// Writer 
-// <Entry Section>
-// wmutex.wait()
-// writers++
-// if (writers == 1) readtry.wait()
-// wmutex.signal()
-// resource.wait()
-
-// <Exit Section>
-// resource.signal()
-// wmutex.wait()
-// writers--
-// if (writers == 0)
-// readtry.signal()
-// wmutex.signal()
-
-// Reader
-// <Entry Section>
-// rentry.wait()
-// readtry.wait()
-// rmutex.wait()
-// readers++
-// if (readers == 1) resource.wait()
-// rmutex.signal()
-// readtry.signal()
-// rentry.signal()
-
-// <Exit Section>
-// rmutex.wait()
-// readers--
-// If (readers == 0) resource.signal()
-// rmutex.signal()

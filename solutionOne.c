@@ -5,8 +5,6 @@
 #include <time.h>
 #include "Semaphore.h"
 
-
-
 //functions and variables for solution
 int readersCount;
 struct Semaphore resource_sem1;
@@ -20,6 +18,12 @@ int writer_count = 0;
 
 double both_total = 0;
 int both_count = 0;
+
+typedef struct {
+    double reader_tat;
+    double writer_tat;
+    double both_tat;
+} tat_results;
 
 //errors if name is only reader
 void *reader1(void *arg) {
@@ -81,7 +85,7 @@ void *writer1(void *arg) {
     return NULL;
 }
 
-int run_sol_one(int num_writers) {
+tat_results run_sol_one(int num_writers) {
     pthread_t reader_threads[10], writer_threads[num_writers];
     int reader_ids[10], writer_ids[num_writers];
 
@@ -115,9 +119,26 @@ int run_sol_one(int num_writers) {
     destroy_sem(&mutexSem);
     destroy_sem(&resource_sem1);
 
+    tat_results results;
+
+    double avg_reader = 0;
     if (reader_count > 0) {
         double avg_reader = reader_total / reader_count;
-        return avg_reader;
     }
-    return 0;
+    results.reader_tat = avg_reader;
+
+    double avg_writer = 0;
+    if (writer_count > 0) {
+        double avg_writer = writer_total / writer_count;
+    }
+    results.writer_tat = avg_writer;
+
+    double avg_both = 0;
+    if (both_count > 0) {
+        double avg_both = both_total / both_count;
+    }
+    results.both_tat = avg_both;
+
+    return results;
+
 }

@@ -3,6 +3,7 @@
         "semaphore.h": "c",
         "stdlib.h": "c",
         "pthread.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "unistd.h": "c"
     }
 }
