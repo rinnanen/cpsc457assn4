@@ -8,6 +8,7 @@
 #include "solutionOne.h"
 #include "solutionTwo.h"
 #include "solutionThree.h"
+#include "tat_results.h"
 
 double sol1_reader = 0;
 double sol1_writer = 0;
