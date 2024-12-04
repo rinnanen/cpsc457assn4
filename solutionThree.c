@@ -50,7 +50,6 @@ void *reader3(void *arg) {
     clock_t end = clock();
 
     double reader_tat = (double)(end - start);
-    //printf("Reader turnaround time:%.2f\n", reader_tat);
     reader_total3 += reader_tat;
     both_total3 += reader_tat;
     reader_count3++;
@@ -62,7 +61,6 @@ void *reader3(void *arg) {
 //errors if name is only writer
 void *writer3(void *arg) {
     clock_t start = clock();
-    //printf("Writer starts at: %ld\n", (long)start);
     int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
 
     new_wait(&mutex_sem);
@@ -73,7 +71,6 @@ void *writer3(void *arg) {
     // read the resource
     usleep(10 * 1000);
 
-    //printf("Writer ends at: %ld\n", (long)end);
     new_wait(&mutex_sem);
     writers_count3--;
     new_signal(&mutex_sem);
