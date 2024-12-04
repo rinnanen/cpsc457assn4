@@ -47,7 +47,7 @@ void *reader1(void *arg) {
     new_signal(&mutexSem); //unlock mutex
     clock_t end = clock();
 
-    double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    double reader_tat = (double)(end - start);
     reader_total += reader_tat;
     both_total += reader_tat;
     reader_count++;
@@ -70,7 +70,7 @@ void *writer1(void *arg) {
     new_signal(&resource_sem1);
     clock_t end = clock();
 
-    double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    double writer_tat = (double)(end - start);
     writer_total += writer_tat;
     both_total += writer_tat;
     writer_count++;
@@ -117,19 +117,19 @@ tat_results run_sol_one(int num_writers) {
 
     double avg_reader = 0;
     if (reader_count > 0) {
-        double avg_reader = reader_total / reader_count;
+        avg_reader = reader_total / reader_count;
     }
     results.reader_tat = avg_reader;
 
     double avg_writer = 0;
     if (writer_count > 0) {
-        double avg_writer = writer_total / writer_count;
+        avg_writer = writer_total / writer_count;
     }
     results.writer_tat = avg_writer;
 
     double avg_both = 0;
     if (both_count > 0) {
-        double avg_both = both_total / both_count;
+        avg_both = both_total / both_count;
     }
     results.both_tat = avg_both;
 

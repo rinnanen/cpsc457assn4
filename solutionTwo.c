@@ -58,7 +58,7 @@ void *reader2(void *arg) {
 
     clock_t end = clock();
 
-    double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    double reader_tat = (double)(end - start);
     reader_total2 += reader_tat;
     both_total2 += reader_tat;
     reader_count2++;
@@ -94,7 +94,7 @@ void *writer2(void *arg) {
     
     clock_t end = clock();
 
-    double writer_tat2 = (double)(end - start) / CLOCKS_PER_SEC;
+    double writer_tat2 = (double)(end - start);
     writer_total2 += writer_tat2;
     both_total2 += writer_tat2;
     writer_count2++;
@@ -150,19 +150,19 @@ tat_results run_sol_two(int num_writers) {
 
     double avg_reader2 = 0;
     if (reader_count2 > 0) {
-        double avg_reader2 = reader_total2 / reader_count2;
+        avg_reader2 = reader_total2 / reader_count2;
     }
     results2.reader_tat2 = avg_reader2;
 
     double avg_writer2 = 0;
     if (writer_count2 > 0) {
-        double avg_writer2 = writer_total2 / writer_count2;
+        avg_writer2 = writer_total2 / writer_count2;
     }
     results2.writer_tat2 = avg_writer2;
 
     double avg_both2 = 0;
     if (both_count2 > 0) {
-        double avg_both2 = both_total2 / both_count2;
+        avg_both2 = both_total2 / both_count2;
     }
     results2.both_tat2 = avg_both2;
 

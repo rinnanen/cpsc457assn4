@@ -49,9 +49,8 @@ void *reader3(void *arg) {
     new_signal(&mutex_sem);
     clock_t end = clock();
 
-    double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
-    reader_tat = (double)(end - start);
-    printf("Reader turnaround time:%.2f\n", reader_tat);
+    double reader_tat = (double)(end - start);
+    //printf("Reader turnaround time:%.2f\n", reader_tat);
     reader_total3 += reader_tat;
     both_total3 += reader_tat;
     reader_count3++;
@@ -81,7 +80,7 @@ void *writer3(void *arg) {
     new_signal(&resource_sem3);
     clock_t end = clock();
 
-    double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
+    double writer_tat = (double)(end - start);
     writer_total3 += writer_tat;
     both_total3 += writer_tat;
     writer_count3++;
@@ -127,23 +126,28 @@ tat_results run_sol_three(int num_writers) {
 
     tat_results results3;
 
+
     double avg_reader3 = 0;
     if (reader_count3 > 0) {
-        double avg_reader3 = reader_total3 / reader_count3;
+        avg_reader3 = reader_total3 / reader_count3;
+        results3.reader_tat3 = avg_reader3;
     }
     results3.reader_tat3 = avg_reader3;
 
     double avg_writer3 = 0;
     if (writer_count3 > 0) {
-        double avg_writer3 = writer_total3 / writer_count3;
+        avg_writer3 = writer_total3 / writer_count3;
     }
     results3.writer_tat3 = avg_writer3;
 
     double avg_both3 = 0;
     if (both_count3 > 0) {
-        double avg_both3 = both_total3 / both_count3;
+        avg_both3 = both_total3 / both_count3;
     }
     results3.both_tat3 = avg_both3;
+
+    reader_total3 = 0;
+    reader_count3 = 0;
 
     return results3;
 }
