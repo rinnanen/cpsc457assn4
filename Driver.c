@@ -26,27 +26,47 @@ int main() {
 
     // measure solution 1
     printf("Readers-Writers Solution 1 (time in seconds)\n");
-    printf("Writers\tAVG reader TAT\tAVG writer TAT\tAVGTAT\n");
+    printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
     fflush(stdout);
 
     for (int i = 0; i < 11; i++) {
-        printf("Solution 1: Test\n");
-        fflush(stdout);
         struct tat_results sol_one = run_sol_one(i);
+        double rtat = sol_one.reader_tat;
+        double wtat = sol_one.writer_tat;
+        double btat = sol_one.general_tat;
+
+        printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat, wtat, btat);
+        fflush(stdout);
     }
 
     // measure solution 2
+    printf("\nReaders-Writers Solution 2 (time in seconds)\n");
+    printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
+    fflush(stdout);
+
     for (int i = 0; i < 11; i++) {
-        printf("Solution 2: Test\n");
-        fflush(stdout);
         struct tat_results sol_two = run_sol_two(i);
+        double rtat2 = sol_two.reader_tat;
+        double wtat2 = sol_two.writer_tat;
+        double btat2 = sol_two.general_tat;
+
+        printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat2, wtat2, btat2);
+        fflush(stdout);
     }
 
     // measure solution 3
+    printf("\nReaders-Writers Solution 3 (time in seconds)\n");
+    printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
+    fflush(stdout);
+
     for (int i = 0; i < 11; i++) {
-        printf("Solution 3: Test\n");
-        fflush(stdout);
         struct tat_results sol_three = run_sol_three(i);
+        double rtat3 = sol_three.reader_tat;
+        double wtat3 = sol_three.writer_tat;
+        double btat3 = sol_three.general_tat;
+
+        printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat3, wtat3, btat3);
+        fflush(stdout);
     }
 
     return 0;
