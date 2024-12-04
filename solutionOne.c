@@ -39,13 +39,13 @@ void *reader1(void *arg) {
     //reading the resource
     usleep(10 * 1000);
 
-    clock_t end = clock();
     new_wait(&mutexSem); //lock mutex to decrease reader count
     readersCount--;
     if (readersCount == 0) { //last reader unlocks resource
         new_signal(&resource_sem1);
     }
     new_signal(&mutexSem); //unlock mutex
+    clock_t end = clock();
 
     double reader_tat = (double)(end - start) / CLOCKS_PER_SEC;
     reader_total += reader_tat;
@@ -67,8 +67,8 @@ void *writer1(void *arg) {
     usleep(10 * 1000);
 
     //finish writing
-    clock_t end = clock();
     new_signal(&resource_sem1);
+    clock_t end = clock();
 
     double writer_tat = (double)(end - start) / CLOCKS_PER_SEC;
     writer_total += writer_tat;
