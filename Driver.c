@@ -30,16 +30,22 @@ int main() {
     fflush(stdout);
 
     for (int i = 0; i < 11; i++) {
+        printf("Solution 1: Test\n");
+        fflush(stdout);
         struct tat_results sol_one = run_sol_one(i);
     }
 
     // measure solution 2
     for (int i = 0; i < 11; i++) {
+        printf("Solution 2: Test\n");
+        fflush(stdout);
         struct tat_results sol_two = run_sol_two(i);
     }
 
     // measure solution 3
     for (int i = 0; i < 11; i++) {
+        printf("Solution 3: Test\n");
+        fflush(stdout);
         struct tat_results sol_three = run_sol_three(i);
     }
 

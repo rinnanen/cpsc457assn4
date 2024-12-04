@@ -46,7 +46,7 @@ void *reader2(void *arg) {
     new_signal(&readtry_mutex_sem);
     new_signal(&rentry_sem);
 
-    usleep(200 * 1000);
+    usleep(10 * 1000);
     // read the resource
 
     clock_t end = clock();
@@ -81,7 +81,7 @@ void *writer2(void *arg) {
     new_wait(&resource_sem2);
 
     // read the resource
-    usleep(200 * 1000);
+    usleep(10 * 1000);
 
     clock_t end = clock();
     new_signal(&resource_sem2);

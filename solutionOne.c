@@ -37,7 +37,7 @@ void *reader1(void *arg) {
     new_signal(&mutexSem); //unlock mutex for other readers to use
 
     //reading the resource
-    usleep(200 * 1000);
+    usleep(10 * 1000);
 
     clock_t end = clock();
     new_wait(&mutexSem); //lock mutex to decrease reader count
@@ -64,7 +64,7 @@ void *writer1(void *arg) {
     new_wait(&resource_sem1);
 
     //simulate write
-    usleep(200 * 1000);
+    usleep(10 * 1000);
 
     //finish writing
     clock_t end = clock();
