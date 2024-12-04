@@ -25,8 +25,10 @@ double sol3_both = 0;
 int main() {
 
     // measure solution 1
-    printf("Readers-Writers Solution 1 (time in seconds)");
-    printf("Writers\tAVG reader TAT\tAVG writer TAT\tAVGTAT");
+    printf("Readers-Writers Solution 1 (time in seconds)\n");
+    printf("Writers\tAVG reader TAT\tAVG writer TAT\tAVGTAT\n");
+    fflush(stdout);
+
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_one = run_sol_one(i);
     }

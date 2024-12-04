@@ -97,11 +97,3 @@ void destroy_sem(struct Semaphore *semaphore){
     pthread_mutex_destroy(&semaphore->mutex);
     pthread_cond_destroy(&semaphore->condition);
 }
-
-//int main(){
-    //struct Semaphore semaphore;
-    //make_sem(&semaphore, 1);
-
-    //destroy_sem(&semaphore);
-    //return 0;
-//}
