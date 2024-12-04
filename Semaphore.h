@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <stdbool.h>
 
-//first time making one of these, not sure how it works
+//header file to remove errors
 
 //semaphore sturcture
 struct Semaphore

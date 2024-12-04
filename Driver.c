@@ -10,6 +10,7 @@
 #include "solutionThree.h"
 #include "tat_results.h"
 
+//stand in values for solution results
 double sol1_reader = 0;
 double sol1_writer = 0;
 double sol1_both = 0;
@@ -25,10 +26,12 @@ double sol3_both = 0;
 int main() {
 
     // measure solution 1
+    //formatting for output
     printf("Readers-Writers Solution 1 (time in seconds)\n");
     printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
     fflush(stdout);
 
+    //get tat result values for output
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_one = run_sol_one(i);
         double rtat = sol_one.reader_tat;
@@ -40,10 +43,12 @@ int main() {
     }
 
     // measure solution 2
+    //formatting for output
     printf("\nReaders-Writers Solution 2 (time in seconds)\n");
     printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
     fflush(stdout);
 
+    //get tat result values for output
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_two = run_sol_two(i);
         double rtat2 = sol_two.reader_tat;
@@ -55,10 +60,12 @@ int main() {
     }
 
     // measure solution 3
+    //formatting for output
     printf("\nReaders-Writers Solution 3 (time in seconds)\n");
     printf("%-8s %-16s %-16s %-16s\n", "Writers", "AVG reader TAT", "AVG writer TAT", "AVGTAT");
     fflush(stdout);
 
+    //get tat result values for output
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_three = run_sol_three(i);
         double rtat3 = sol_three.reader_tat;

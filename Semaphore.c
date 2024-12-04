@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "Semaphore.h"
 
-
+//custom enqueue function for Semaphores
 void enqueue(struct Queue *queue, pthread_t id)
 {
     struct Node *new_node = (struct Node *)malloc(sizeof(struct Node));
@@ -23,6 +23,7 @@ void enqueue(struct Queue *queue, pthread_t id)
     queue->rear = new_node;
 }
 
+//custom dequeue function for Semaphores
 pthread_t dequeue(struct Queue *queue)
 {
     if (queue->front == NULL)
@@ -45,12 +46,14 @@ pthread_t dequeue(struct Queue *queue)
     return id;
 }
 
+//start queue
 void initialize_queue(struct Queue *queue)
 {
     queue->front = NULL;
     queue->rear = NULL;
 }
 
+//check if is empty
 bool is_empty(struct Queue *queue)
 {
     if (queue->front == NULL)
@@ -60,6 +63,7 @@ bool is_empty(struct Queue *queue)
     return false;
 }
 
+//custom wait function 
 void new_wait(struct Semaphore *sem) {
     pthread_mutex_lock(&sem->mutex); // lock thread
     while (sem->value <= 0) { // check if count <= 0, if so wait
@@ -71,6 +75,7 @@ void new_wait(struct Semaphore *sem) {
     pthread_mutex_unlock(&sem->mutex);
 }
 
+//custom wait function 
 void new_signal(struct Semaphore *sem){
     pthread_mutex_lock(&sem->mutex); // lock thread
     sem->value++;                    // increment count
@@ -80,7 +85,7 @@ void new_signal(struct Semaphore *sem){
     pthread_mutex_unlock(&sem->mutex); // unlock thread once finished
 }
 
-
+//make a new semaphore
 void make_sem(struct Semaphore *semaphore, int starting_value){
     semaphore->value = starting_value;
     pthread_mutex_init(&semaphore->mutex, NULL);
@@ -90,6 +95,7 @@ void make_sem(struct Semaphore *semaphore, int starting_value){
     initialize_queue(semaphore->queue);
 }
 
+//destroy existing semaphore
 void destroy_sem(struct Semaphore *semaphore){
 
     free(semaphore->queue);

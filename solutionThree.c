@@ -25,6 +25,7 @@ typedef struct {
     double both_tat3;
 } tat_results;
 
+
 void *reader3(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);

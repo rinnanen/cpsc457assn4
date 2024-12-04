@@ -47,6 +47,7 @@ void *reader1(void *arg) {
     new_signal(&mutexSem); //unlock mutex
     clock_t end = clock();
 
+    //tat calculations
     double reader_tat = (double)(end - start);
     reader_total += reader_tat;
     both_total += reader_tat;
@@ -70,6 +71,7 @@ void *writer1(void *arg) {
     new_signal(&resource_sem1);
     clock_t end = clock();
 
+    //tat calculations
     double writer_tat = (double)(end - start);
     writer_total += writer_tat;
     both_total += writer_tat;
@@ -115,6 +117,7 @@ tat_results run_sol_one(int num_writers) {
 
     tat_results results;
 
+    //averaging out of tat results
     double avg_reader = 0;
     if (reader_count > 0) {
         avg_reader = reader_total / reader_count;
