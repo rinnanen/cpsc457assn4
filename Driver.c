@@ -31,9 +31,9 @@ int main() {
 
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_one = run_sol_one(i);
-        double rtat = sol_one.reader_tat;
-        double wtat = sol_one.writer_tat;
-        double btat = sol_one.general_tat;
+        double rtat = sol_one.reader_tat / 1000;
+        double wtat = sol_one.writer_tat / 1000;
+        double btat = sol_one.general_tat / 1000;
 
         printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat, wtat, btat);
         fflush(stdout);
