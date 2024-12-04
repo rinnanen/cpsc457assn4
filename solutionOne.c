@@ -117,23 +117,25 @@ tat_results run_sol_one(int num_writers) {
 
     tat_results results;
 
-    //averaging out of tat results
-    double avg_reader = 0;
+    double avg_reader = 0; // initialize in case of no readers
     if (reader_count > 0) {
         avg_reader = reader_total / reader_count;
     }
+    // assign it to 0 if there are no readers
     results.reader_tat = avg_reader;
 
-    double avg_writer = 0;
+    double avg_writer = 0; // initialize in case of no writers
     if (writer_count > 0) {
         avg_writer = writer_total / writer_count;
     }
+    // assign it to 0 if there are no writers
     results.writer_tat = avg_writer;
 
-    double avg_both = 0;
+    double avg_both = 0; // initialize in case of no processes
     if (both_count > 0) {
         avg_both = both_total / both_count;
     }
+    // assign it to 0 if there are no processes
     results.both_tat = avg_both;
 
     return results;
