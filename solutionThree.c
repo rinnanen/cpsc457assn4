@@ -26,29 +26,36 @@ typedef struct {
     double both_tat3;
 } tat_results;
 
-
+//errors if name is only reader
 void *reader3(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
 
-    new_wait(&mutex_sem);
+    new_wait(&mutex_sem); //lock mutex
+
+    //if no readers or writers, lock resource for reader
     if (writers_count3 > 0 || readers_count3 == 0) {
         new_signal(&mutex_sem);
         new_wait(&resource_sem3);
         new_wait(&mutex_sem);
     }
-    readers_count3++;
-    new_signal(&mutex_sem);
+    readers_count3++; //increase reader count
+    new_signal(&mutex_sem); //unlock mutex
 
     // read the resource
     usleep(10 * 1000);
 
+    //lock mutex and decrease reader  count
     new_wait(&mutex_sem);
     readers_count3--;
+    //if no more readers, unlcok resource
     if (readers_count3 == 0) {
         new_signal(&resource_sem3);
-    }
+    } 
+    //unlock mutex
     new_signal(&mutex_sem);
+
+     //tat calculations
     clock_t end = clock();
 
     double reader_tat = (double)(end - start);
@@ -65,18 +72,25 @@ void *writer3(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg); //should cause errors relating to pthread_create to stop
 
+    //lock mutex,  increase writer count, unlock mutex
     new_wait(&mutex_sem);
-    writers_count3++;
+    writers_count3++; 
     new_signal(&mutex_sem);
-    new_wait(&resource_sem3);
+
+
+    new_wait(&resource_sem3);//lock resource
 
     // read the resource
     usleep(10 * 1000);
 
-    new_wait(&mutex_sem);
-    writers_count3--;
-    new_signal(&mutex_sem);
+    new_wait(&mutex_sem);//lock mutex
+    writers_count3--;//decrease writer count
+
+    //unlock mutex and resource
+    new_signal(&mutex_sem); 
     new_signal(&resource_sem3);
+
+     //tat calculations
     clock_t end = clock();
 
     double writer_tat = (double)(end - start);
@@ -126,23 +140,26 @@ tat_results run_sol_three(int num_writers) {
     tat_results results3;
 
 
-    double avg_reader3 = 0;
+    double avg_reader3 = 0;// initialize in case of no readers
     if (reader_count3 > 0) {
         avg_reader3 = reader_total3 / reader_count3;
         results3.reader_tat3 = avg_reader3;
     }
+     // assign it to 0 if there are no readers
     results3.reader_tat3 = avg_reader3;
 
-    double avg_writer3 = 0;
+    double avg_writer3 = 0;// initialize in case of no writers
     if (writer_count3 > 0) {
         avg_writer3 = writer_total3 / writer_count3;
     }
+     // assign it to 0 if there are no writers
     results3.writer_tat3 = avg_writer3;
 
-    double avg_both3 = 0;
+    double avg_both3 = 0;// initialize in case of no processes
     if (both_count3 > 0) {
         avg_both3 = both_total3 / both_count3;
     }
+     // assign it to 0 if there are no processes
     results3.both_tat3 = avg_both3;
 
     reader_total3 = 0;

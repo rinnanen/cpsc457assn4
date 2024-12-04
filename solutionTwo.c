@@ -52,14 +52,14 @@ void *reader2(void *arg) {
     usleep(10 * 1000);
     // read the resource
 
-    new_wait(&read_mutex_sem);
+    new_wait(&read_mutex_sem);//lock read mutex and decrease reader count
     readerCount2--;
 
     //once there are no more readers waiting we unlock the resource
     if (readerCount2 == 0) {
         new_signal(&resource_sem2);
     }
-    new_signal(&read_mutex_sem);
+    new_signal(&read_mutex_sem);//unlock read mutex
 
     //tat calculations
     clock_t end = clock();
@@ -87,7 +87,7 @@ void *writer2(void *arg) {
         new_wait(&readtry_mutex_sem);
     }
 
-
+    //unlock write mutex
     new_signal(&write_mutex_sem);
 
     //lock the resource
@@ -98,12 +98,16 @@ void *writer2(void *arg) {
 
     //unlock the reource
     new_signal(&resource_sem2);
+
+    //lock write mutex and decrease writer count
     new_wait(&write_mutex_sem);
     writerCount2--;
+
     //if no more writers waiting, unlock readtry sem
     if (writerCount2 == 0) {
         new_signal(&readtry_mutex_sem);
     }
+    //unlock wrtie mutex
     new_signal(&write_mutex_sem);
     
 
