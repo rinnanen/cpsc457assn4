@@ -5,6 +5,7 @@
 #include "Semaphore.h"
 
 //functions and variables for solution
+//based on assignment description
 int readers_count3;
 int writers_count3;
 struct Semaphore resource_sem3;

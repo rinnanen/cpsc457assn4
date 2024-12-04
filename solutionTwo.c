@@ -7,6 +7,7 @@
 
 
 //functions and variables for solution
+//based on assignment description
 int readerCount2;
 int writerCount2;
 struct Semaphore write_mutex_sem;
@@ -34,14 +35,16 @@ typedef struct {
 void *reader2(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
-
+    //lock semaphores and increae reader count
     new_wait(&rentry_sem);
     new_wait(&readtry_mutex_sem);
     new_wait(&read_mutex_sem);
     readerCount2++;
+    //if only 1 reader is waiting we lock the resource
     if (readerCount2 == 1) {
         new_wait(&resource_sem2);
     }
+    //unlock for other readers to use
     new_signal(&read_mutex_sem);
     new_signal(&readtry_mutex_sem);
     new_signal(&rentry_sem);
@@ -51,11 +54,14 @@ void *reader2(void *arg) {
 
     new_wait(&read_mutex_sem);
     readerCount2--;
+
+    //once there are no more readers waiting we unlock the resource
     if (readerCount2 == 0) {
         new_signal(&resource_sem2);
     }
     new_signal(&read_mutex_sem);
 
+    //tat calculations
     clock_t end = clock();
 
     double reader_tat = (double)(end - start);
@@ -72,26 +78,36 @@ void *writer2(void *arg) {
     clock_t start = clock();
     int thread_id = *((int *)arg);
 
+    //lock write mutex
     new_wait(&write_mutex_sem);
+    //increase writer count
     writerCount2++;
+    //check if only 1 writer is waiting 
     if (writerCount2 == 1) {
         new_wait(&readtry_mutex_sem);
     }
 
+
     new_signal(&write_mutex_sem);
+
+    //lock the resource
     new_wait(&resource_sem2);
 
     // read the resource
     usleep(10 * 1000);
 
+    //unlock the reource
     new_signal(&resource_sem2);
     new_wait(&write_mutex_sem);
     writerCount2--;
+    //if no more writers waiting, unlock readtry sem
     if (writerCount2 == 0) {
         new_signal(&readtry_mutex_sem);
     }
     new_signal(&write_mutex_sem);
     
+
+    //tat calculations
     clock_t end = clock();
 
     double writer_tat2 = (double)(end - start);
@@ -146,24 +162,28 @@ tat_results run_sol_two(int num_writers) {
     destroy_sem(&rentry_sem);
 
 
+
     tat_results results2;
 
-    double avg_reader2 = 0;
+    double avg_reader2 = 0; // initialize in case of no readers
     if (reader_count2 > 0) {
         avg_reader2 = reader_total2 / reader_count2;
     }
+    // assign it to 0 if there are no readers
     results2.reader_tat2 = avg_reader2;
-
-    double avg_writer2 = 0;
+    
+    double avg_writer2 = 0;// initialize in case of no writers
     if (writer_count2 > 0) {
         avg_writer2 = writer_total2 / writer_count2;
     }
+    // assign it to 0 if there are no writers
     results2.writer_tat2 = avg_writer2;
 
-    double avg_both2 = 0;
+    double avg_both2 = 0;// initialize in case of no processes
     if (both_count2 > 0) {
         avg_both2 = both_total2 / both_count2;
     }
+    // assign it to 0 if there are no processes
     results2.both_tat2 = avg_both2;
 
     return results2;

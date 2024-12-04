@@ -6,6 +6,7 @@
 #include "Semaphore.h"
 
 //functions and variables for solution
+//based on assignment description
 int readersCount;
 struct Semaphore resource_sem1;
 struct Semaphore mutexSem;
