@@ -46,9 +46,9 @@ int main() {
 
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_two = run_sol_two(i);
-        double rtat2 = sol_two.reader_tat;
-        double wtat2 = sol_two.writer_tat;
-        double btat2 = sol_two.general_tat;
+        double rtat2 = sol_two.reader_tat / 1000;
+        double wtat2 = sol_two.writer_tat / 1000;
+        double btat2 = sol_two.general_tat / 1000;
 
         printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat2, wtat2, btat2);
         fflush(stdout);
@@ -61,9 +61,9 @@ int main() {
 
     for (int i = 0; i < 11; i++) {
         struct tat_results sol_three = run_sol_three(i);
-        double rtat3 = sol_three.reader_tat;
-        double wtat3 = sol_three.writer_tat;
-        double btat3 = sol_three.general_tat;
+        double rtat3 = sol_three.reader_tat / 1000;
+        double wtat3 = sol_three.writer_tat / 1000;
+        double btat3 = sol_three.general_tat / 1000;
 
         printf("%-8d %-16.2f %-16.2f %-16.2f\n", i, rtat3, wtat3, btat3);
         fflush(stdout);
